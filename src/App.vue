@@ -4,6 +4,10 @@ import { onMounted, ref, watchEffect } from "vue";
 import { create } from "@regions-of-indonesia/client";
 import type { Region } from "@regions-of-indonesia/types";
 
+import Label from "./components/Label.vue";
+import Select from "./components/Select.vue";
+import RegionSelectOptions from "./components/RegionSelectOptions.vue";
+
 const client = create();
 
 const provinces = ref<Region[]>([]);
@@ -57,44 +61,36 @@ watchEffect(async () => {
 
 <template>
   <div class="container max-w-screen-lg mx-auto p-4 md:p-6 lg:p-8 xl:p-10">
-    <h1 class="mb-4 lg:mb-6 text-center text-lg lg:text-xl font-mono">Regions of Indonesia</h1>
+    <h1 class="mb-4 lg:mb-6 text-center text-lg md:text-xl 2xl:text-2xl font-mono font-bold">Regions of Indonesia</h1>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-      <div>
-        <select class="select select-bordered select-xs w-full" v-model="selectedProvinceCode">
+      <div class="flex flex-col gap-1">
+        <Label for="select-provinces">Provinces</Label>
+        <Select id="select-provinces" v-model="selectedProvinceCode">
           <option value="" disabled>Select...</option>
-
-          <option v-for="region in provinces" :key="region.code" :value="region.code">
-            {{ region.name }}
-          </option>
-        </select>
+          <RegionSelectOptions :regions="provinces" />
+        </Select>
       </div>
-      <div>
-        <select class="select select-bordered select-xs w-full" v-model="selectedDistrictCode">
+      <div class="flex flex-col gap-1">
+        <Label for="select-districts">Districts</Label>
+        <Select id="select-districts" v-model="selectedDistrictCode">
           <option value="" disabled>Select...</option>
-
-          <option v-for="region in districts" :key="region.code" :value="region.code">
-            {{ region.name }}
-          </option>
-        </select>
+          <RegionSelectOptions :regions="districts" />
+        </Select>
       </div>
-      <div>
-        <select class="select select-bordered select-xs w-full" v-model="selectedSubdistrictsCode">
+      <div class="flex flex-col gap-1">
+        <Label for="select-subdistricts">Subdistricts</Label>
+        <Select id="select-subdistricts" v-model="selectedSubdistrictsCode">
           <option value="" disabled>Select...</option>
-
-          <option v-for="region in subdistricts" :key="region.code" :value="region.code">
-            {{ region.name }}
-          </option>
-        </select>
+          <RegionSelectOptions :regions="subdistricts" />
+        </Select>
       </div>
-      <div>
-        <select class="select select-bordered select-xs w-full" v-model="selectedVillageCode">
+      <div class="flex flex-col gap-1">
+        <Label for="select-villages">Villages</Label>
+        <Select id="select-villages" v-model="selectedVillageCode">
           <option value="" disabled>Select...</option>
-
-          <option v-for="region in villages" :key="region.code" :value="region.code">
-            {{ region.name }}
-          </option>
-        </select>
+          <RegionSelectOptions :regions="villages" />
+        </Select>
       </div>
     </div>
   </div>

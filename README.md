@@ -1,6 +1,6 @@
 # example-vue
 
-Example Vue Tailwind Daisy UI
+Example Vue Tailwind
 
 <a title="github" href="https://github.com/regions-of-indonesia/example-vue">
   <picture>
