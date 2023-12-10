@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from "vue";
 
-import { create } from "@regions-of-indonesia/client";
+import { create, cache } from "@regions-of-indonesia/client";
+import { isRegionCode } from "@regions-of-indonesia/utils";
 import type { Region } from "@regions-of-indonesia/types";
 
 import Label from "./components/Label.vue";
 import Select from "./components/Select.vue";
 import RegionSelectOptions from "./components/RegionSelectOptions.vue";
 
-const client = create();
+const client = create({
+  middlewares: [cache()],
+});
+
+const parseRegionCode = (value: unknown) => {
+  if (value && isRegionCode(value)) return value;
+  throw new Error("Invalid region code");
+};
 
 const provinces = ref<Region[]>([]);
 const districts = ref<Region[]>([]);
@@ -24,6 +32,7 @@ onMounted(async () => {
   try {
     provinces.value = await client.province.find();
   } catch (error) {
+    console.error(error);
     provinces.value = [];
   }
 });
@@ -32,8 +41,9 @@ watchEffect(async () => {
   selectedDistrictCode.value = "";
 
   try {
-    districts.value = await client.district.find(selectedProvinceCode.value);
+    districts.value = await client.district.find(parseRegionCode(selectedProvinceCode.value));
   } catch (error) {
+    console.error(error);
     districts.value = [];
   }
 });
@@ -42,8 +52,9 @@ watchEffect(async () => {
   selectedSubdistrictsCode.value = "";
 
   try {
-    subdistricts.value = await client.subdistrict.find(selectedDistrictCode.value);
+    subdistricts.value = await client.subdistrict.find(parseRegionCode(selectedDistrictCode.value));
   } catch (error) {
+    console.error(error);
     subdistricts.value = [];
   }
 });
@@ -52,8 +63,9 @@ watchEffect(async () => {
   selectedVillageCode.value = "";
 
   try {
-    villages.value = await client.village.find(selectedSubdistrictsCode.value);
+    villages.value = await client.village.find(parseRegionCode(selectedSubdistrictsCode.value));
   } catch (error) {
+    console.error(error);
     villages.value = [];
   }
 });
